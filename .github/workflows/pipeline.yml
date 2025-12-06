@@ -33,6 +33,7 @@ jobs:
           # dotnet restore
           dotnet publish src/BookLendingSolution/BookLendingSolution.csproj \
             -c Release \
+            --self-contained false \
             -o ./publish
           cd publish
           zip -r ../booklendingsolution.zip .
