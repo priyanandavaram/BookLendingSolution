@@ -3,46 +3,58 @@ namespace BookLendingSolution
 
     public partial class Program
     {
-        public static void ConfigureApp(IApplicationBuilder app)
-        {
-         
-        }
+        //public static void ConfigureApp(IApplicationBuilder app)
+        //{
 
-        public static WebApplication BuildWebApp(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
-            var startup = new Startup();
+        //}
 
-            startup.ConfigureServices(builder.Services);
+        //public static WebApplication BuildWebApp(string[] args)
+        //{
+        //    var builder = WebApplication.CreateBuilder(args);
+        //    var startup = new Startup();
 
-            var app = builder.Build();
+        //    startup.ConfigureServices(builder.Services);
 
-            startup.Configure(app, app.Environment);
+        //    var app = builder.Build();
 
-            app.Run();
+        //    startup.Configure(app, app.Environment);
 
-            // builder.Services.AddControllers();
-            // builder.Services.AddEndpointsApiExplorer();
-            // builder.Services.AddSwaggerGen();
-            // builder.Services.AddScoped<Interfaces.IBookService, Service.BookService>();
-            // builder.Services.AddSingleton<Interfaces.IBookRepository, Repository.BookRepository>();
+        //    app.Run();
 
-
-            // var app = builder.Build();
+        //    // builder.Services.AddControllers();
+        //    // builder.Services.AddEndpointsApiExplorer();
+        //    // builder.Services.AddSwaggerGen();
+        //    // builder.Services.AddScoped<Interfaces.IBookService, Service.BookService>();
+        //    // builder.Services.AddSingleton<Interfaces.IBookRepository, Repository.BookRepository>();
 
 
-            //app.UseSwagger();
-            //app.UseSwaggerUI();
-            //app.UseRouting();
-            //app.MapControllers();
+        //    // var app = builder.Build();
 
-            return app;
-        }
 
+        //    //app.UseSwagger();
+        //    //app.UseSwaggerUI();
+        //    //app.UseRouting();
+        //    //app.MapControllers();
+
+        //    return app;
+        //}
+
+        //public static void Main(string[] args)
+        //{
+        //    var app = BuildWebApp(args);
+        //    app.Run();
+        //}
         public static void Main(string[] args)
         {
-            var app = BuildWebApp(args);
-            app.Run();
+            CreateHostBuilder(args).Build().Run();
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
     }
+}
 }
