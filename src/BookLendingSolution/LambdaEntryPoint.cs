@@ -1,5 +1,4 @@
 ﻿using Amazon.Lambda.AspNetCoreServer;
-using Microsoft.AspNetCore.Hosting;
 
 namespace BookLendingSolution
 {
