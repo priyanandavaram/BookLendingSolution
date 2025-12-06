@@ -4,16 +4,11 @@ Description: Lambda Deployment for Book Lending Solution API
 
 Resources:
 
-  # -------------------------------------------
   BookLendingApi:
     Type: AWS::Serverless::HttpApi
     Properties:
-      Name: BookLendingSolutionApiGateway
       StageName: prod
 
-  # -------------------------------------------
-  # LAMBDA FUNCTION
-  # -------------------------------------------
   BookLendingLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -28,7 +23,6 @@ Resources:
       
       Events:
 
-        # ---------- GET /books ----------
         GetBooks:
           Type: HttpApi
           Properties:
@@ -36,7 +30,6 @@ Resources:
             Method: GET
             ApiId: !Ref BookLendingApi
 
-        # ---------- POST /books ----------
         CreateBook:
           Type: HttpApi
           Properties:
@@ -44,7 +37,6 @@ Resources:
             Method: POST
             ApiId: !Ref BookLendingApi
 
-        # ---------- OPTIONAL: catch-all route ----------
         ProxyRoutes:
           Type: HttpApi
           Properties:
@@ -52,12 +44,11 @@ Resources:
             Method: ANY
             ApiId: !Ref BookLendingApi
 
-
 Outputs:
 
   ApiUrl:
     Description: Invoke URL for API Gateway
-    Value: !Sub "https://${BookLendingApi}.execute-api.${AWS::Region}.amazonaws.com/prod"
+    Value: !Sub "https://${BookLendingApi}.execute-api.${AWS::Region}.amazonaws.com/prod/"
 
   LambdaArn:
     Description: ARN of Lambda function
