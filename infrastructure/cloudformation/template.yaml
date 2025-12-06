@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Lambda Deployment for Book Lending Solution API
+
+Resources:
+  BookLendingLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: BookLendingApi
+      Handler: BookLendingSolution::BookLendingSolution.LambdaEntryPoint::FunctionHandlerAsync
+      Runtime: dotnet8
+      MemorySize: 256
+      Timeout: 30
+      CodeUri: s3://{{S3_BUCKET}}/booklendingsolution.zip
+      Policies:
+        - AWSLambdaBasicExecutionRole
+
+Outputs:
+  LambdaArn:
+    Description: ARN of the Lambda
+    Value: !GetAtt BookLendingLambda.Arn
