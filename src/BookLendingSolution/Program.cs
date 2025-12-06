@@ -11,27 +11,32 @@ namespace BookLendingSolution
         public static WebApplication BuildWebApp(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var startup = new Startup();
 
-            builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
-
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<Interfaces.IBookService, Service.BookService>();
-            builder.Services.AddSingleton<Interfaces.IBookRepository, Repository.BookRepository>();
-           
+            startup.ConfigureServices(builder.Services);
 
             var app = builder.Build();
 
-           
-           app.UseSwagger();
-           app.UseSwaggerUI();
-           app.UseRouting();
-           app.MapControllers();
+            startup.Configure(app, app.Environment);
 
-           ConfigureApp(app);
+            app.Run();
 
-           return app;
+            // builder.Services.AddControllers();
+            // builder.Services.AddEndpointsApiExplorer();
+            // builder.Services.AddSwaggerGen();
+            // builder.Services.AddScoped<Interfaces.IBookService, Service.BookService>();
+            // builder.Services.AddSingleton<Interfaces.IBookRepository, Repository.BookRepository>();
+
+
+            // var app = builder.Build();
+
+
+            //app.UseSwagger();
+            //app.UseSwaggerUI();
+            //app.UseRouting();
+            //app.MapControllers();
+
+            return app;
         }
 
         public static void Main(string[] args)

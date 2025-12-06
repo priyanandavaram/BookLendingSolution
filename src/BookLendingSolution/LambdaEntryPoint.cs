@@ -13,8 +13,7 @@ namespace BookLendingSolution
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+        {           
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
