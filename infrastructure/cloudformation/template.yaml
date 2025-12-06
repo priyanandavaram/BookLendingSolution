@@ -34,7 +34,7 @@ Resources:
         GetBooks:
           Type: HttpApi
           Properties:
-            Path: /books
+            Path: api/books
             Method: GET
             ApiId: !Ref BookLendingApi
 
@@ -42,7 +42,7 @@ Resources:
         CreateBook:
           Type: HttpApi
           Properties:
-            Path: /books
+            Path: api/books
             Method: POST
             ApiId: !Ref BookLendingApi
 
