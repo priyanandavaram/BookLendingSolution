@@ -15,14 +15,27 @@ namespace BookLendingSolution
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            // Nothing to do here usually unless you're using DI overrides
+            services.AddControllers();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
+            services.AddScoped<Interfaces.IBookService, Service.BookService>();
+            services.AddSingleton<Interfaces.IBookRepository, Repository.BookRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            // The Program.cs already configures the pipeline,
-            // this simply forwards to your main app
-            Program.ConfigureApp(app);
+            if (env.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+
+            app.UseSwagger();
+            app.UseSwaggerUI();
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
