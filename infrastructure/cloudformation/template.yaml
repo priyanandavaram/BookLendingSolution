@@ -34,7 +34,7 @@ Resources:
           Properties:
             Path: /books
             Method: GET
-            ApiId: !Ref BookLendingSolutionApi
+            ApiId: !Ref BookLendingSolutionApiGateway
 
         # ---------- POST /books ----------
         CreateBook:
@@ -42,7 +42,7 @@ Resources:
           Properties:
             Path: /books
             Method: POST
-            ApiId: !Ref BookLendingSolutionApi
+            ApiId: !Ref BookLendingSolutionApiGateway
 
         # ---------- OPTIONAL: catch-all routes ----------
         ProxyRoutes:
@@ -50,7 +50,7 @@ Resources:
           Properties:
             Path: /{proxy+}
             Method: ANY
-            ApiId: !Ref BookLendingSolutionApi
+            ApiId: !Ref BookLendingSolutionApiGateway
 
 Outputs:
   ApiUrl:
