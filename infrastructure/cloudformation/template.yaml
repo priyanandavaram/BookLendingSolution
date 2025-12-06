@@ -5,12 +5,10 @@ Description: Lambda Deployment for Book Lending Solution API
 Resources:
 
   # -------------------------------------------
-  # API GATEWAY (HTTP API)
-  # -------------------------------------------
   BookLendingApi:
     Type: AWS::Serverless::HttpApi
     Properties:
-      ApiName: BookLendingSolutionApiGateway
+      Name: BookLendingSolutionApiGateway
       StageName: prod
 
   # -------------------------------------------
