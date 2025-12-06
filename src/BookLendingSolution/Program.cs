@@ -33,6 +33,7 @@ namespace BookLendingSolution
         public static void Main(string[] args)
         {
             var app = BuildWebApp(args);
+
             app.Run();
         }
     }
