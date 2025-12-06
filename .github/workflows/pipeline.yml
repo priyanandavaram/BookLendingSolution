@@ -27,10 +27,10 @@ jobs:
 
       - name: Publish Lambda Project
         run: |
-          rm -rf publish
-          rm -f booklendingsolution.zip
-          dotnet clean
-          dotnet restore
+          # rm -rf publish
+          # rm -f booklendingsolution.zip
+          # dotnet clean
+          # dotnet restore
           dotnet publish src/BookLendingSolution/BookLendingSolution.csproj \
             -c Release \
             -o ./publish
