@@ -14,6 +14,7 @@ namespace BookLendingSolution
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
