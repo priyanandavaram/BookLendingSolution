@@ -1,17 +1,29 @@
 ﻿using BookLendingSolution.Interfaces;
 using BookLendingSolution.Models;
+using System.Collections.Concurrent;
 
 namespace BookLendingSolution.Repository
 {
     public class BookRepository : IBookRepository
     {
-        private readonly List<Book> _books = new List<Book>();
+        private readonly ConcurrentDictionary<int, Book> _books = new();
 
-        public Book AddBook(Book book)
+        private int _idCounter = 0;
+
+        public (bool, Book) AddBook(Book book)
         {
-            _books.Add(book);
+            book.Id = Interlocked.Increment(ref _idCounter);
 
-            return GetBookById(book.Id);
+            bool bookStatus = _books.TryAdd(book.Id, book);
+
+            if(bookStatus)
+            {
+                return (bookStatus, book);
+            }
+            else
+            {
+                return (bookStatus, null);
+            }
         }
 
         public void CheckoutBook(int bookId, string checkedoutUser)
@@ -25,24 +37,26 @@ namespace BookLendingSolution.Repository
 
         public IEnumerable<Book> GetAllBooks()
         {
-            return _books;
+            return _books.Values.ToList();
         }
 
         public Book GetBookById(int bookId)
         {
-            return _books.FirstOrDefault(bookInfo => bookInfo.Id == bookId);
+            _books.TryGetValue(bookId, out var book);
+            return book;
         }
 
         public bool GetBookByName(string bookName)
         {
-            bool checkIfBookExists = _books.Any(bookInfo => bookInfo.BookTitle.Equals(bookName, StringComparison.OrdinalIgnoreCase));
+            bool checkIfBookExists = _books.Values.Any(bookInfo => bookInfo.BookTitle.
+                                                   Equals(bookName, StringComparison.OrdinalIgnoreCase));
 
             return checkIfBookExists;
         }
 
         public void ReturnBook(int bookId)
         {
-            var book = _books.FirstOrDefault(b => b.Id == bookId);
+            var book = GetBookById(bookId);
 
             if (book != null)
             {

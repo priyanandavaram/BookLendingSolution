@@ -6,19 +6,15 @@ namespace BookLendingSolution.Service
     public class BookService : IBookService
     {
         private IBookRepository _bookRepository;
+
         public BookService(IBookRepository bookRepository)
         {
             _bookRepository = bookRepository;
         }
-        public Book AddBook(Book book)
+
+        public (bool, Book) AddBook(Book book)
         {
-            IEnumerable<Book> getBooks = _bookRepository.GetAllBooks();
-
-            int getLastBookId = getBooks.OrderByDescending(bookInfo => bookInfo.Id)
-                                         .Select(bookInfo => bookInfo.Id)
-                                         .FirstOrDefault();
-
-            book.Id = getLastBookId + 1;
+            book.IsBookAvailable = true;
 
             return _bookRepository.AddBook(book);
         }

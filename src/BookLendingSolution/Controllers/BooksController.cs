@@ -1,8 +1,9 @@
 using BookLendingSolution.Interfaces;
 using BookLendingSolution.Models;
+using BookLendingSolution.MessageConstants;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApplication1.Controllers
+namespace BookLendingSolution.Controllers
 {
     [ApiController]
     [Route("api/books")]
@@ -19,7 +20,7 @@ namespace WebApplication1.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return Conflict(new { message = "Invalid book information." });
+                return BadRequest(new { message = BookStatusMessages.InvalidBookInfo });
             }
             else
             {
@@ -27,14 +28,21 @@ namespace WebApplication1.Controllers
 
                 if (ifBookExists)
                 {
-                    return Conflict(new { message = "A book with the same title already exists." });
+                    return Conflict(new { message = BookStatusMessages.DuplicateBookTitle });
                 }
                 else
                 {
-                    _bookService.AddBook(bookInfo);
+                    var (isBookAdded, addedBookInfo) = _bookService.AddBook(bookInfo);
 
-                    return Ok(new { message = "Book has been added successfully.", book = bookInfo });
+                    if (isBookAdded)
+                    {
+                        return Ok(new { message = BookStatusMessages.BookAdded, book = addedBookInfo });
+                    }
 
+                    else
+                    {
+                        return StatusCode(500, new { message = "An error occurred while adding the book." });
+                    }
                 }
             }
         }
@@ -45,25 +53,25 @@ namespace WebApplication1.Controllers
         {
             if (string.IsNullOrWhiteSpace(checkedoutUser))
             {
-                return BadRequest(new { message = "Checked-out user must be provided." });
+                return BadRequest(new { message = BookStatusMessages.CheckoutUserRequired });
             }
 
             Book bookInfo = _bookService.GetBookById(id);
 
             if (bookInfo == null)
             {
-                return NotFound(new { message = $"Book with id {id} not found." });
+                return NotFound(new { message = $"Book with id {id} is not found." });
             }
 
             if (!bookInfo.IsBookAvailable)
             {
-                return Conflict(new { message = "Book is already checked out." });
+                return Conflict(new { message = BookStatusMessages.BookCheckedOut });
             }
             else
             {
                 _bookService.CheckoutBook(id, checkedoutUser);
 
-                return Ok(new { message = $"Book '{bookInfo.BookTitle}' checked out by {checkedoutUser}." });
+                return Ok(new { message = $"Book '{bookInfo.BookTitle}' has been checked out by the user {checkedoutUser}." });
             }
         }
 
@@ -81,12 +89,12 @@ namespace WebApplication1.Controllers
 
             if (bookInfo == null)
             {
-                return NotFound(new { message = $"Book with id {id} was not found." });
+                return NotFound(new { message = $"Book with the id {id} was not found." });
             }
 
             if (bookInfo.IsBookAvailable)
             {
-                return Conflict(new { message = "Book is not currently checked out." });
+                return Conflict(new { message = BookStatusMessages.BookIsAvailable });
             }
             else
             {
@@ -94,7 +102,6 @@ namespace WebApplication1.Controllers
 
                 return Ok(new { message = $"Book '{bookInfo.BookTitle}' has been returned successfully." });
             }
-
         }
     }
 }
