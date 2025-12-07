@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="src/BookLendingSolution/BookLendingSolution.csproj" />
+  <Project Path="tests/BookLendingSolution.Tests/BookLendingSolution.Tests.csproj" Id="70ff3656-d1a2-4224-8db1-1188b96195fd" />
 </Solution>

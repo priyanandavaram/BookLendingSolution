@@ -25,6 +25,9 @@ jobs:
       - name: Build Solution
         run: dotnet build BookLendingSolution.slnx --configuration Release --no-restore
 
+      - name: Run Tests
+        run: dotnet test BookLendingSolution.slnx --configuration Release --no-build --verbosity normal
+
       - name: Publish Lambda Project
         run: |
           rm -rf publish
