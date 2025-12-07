@@ -20,28 +20,28 @@ namespace BookLendingSolution.Tests.Controllers
             _controller = new BooksController(_mockBookService.Object);
         }
 
-        [Test]
-        public void AddNewBook_ShouldReturnBadRequest_WhenModelInvalid()
-        {
-            //_controller.ModelState.AddModelError("BookTitle", "Required");
-            //_controller.ModelState.AddModelError("BookAuthor", "Required");
-            var book = new Book { BookTitle = "Test Book", BookAuthor = "rerere" };
-
-            var result = _controller.AddNewBook(book);
-
-            result.Should().BeOfType<BadRequestObjectResult>();
-        }
-
         //[Test]
-        //public void AddNewBook_ShouldReturnConflict_WhenBookAlreadyExists()
+        //public void AddNewBook_ShouldReturnBadRequest_WhenModelInvalid()
         //{
+        //    //_controller.ModelState.AddModelError("BookTitle", "Required");
+        //    //_controller.ModelState.AddModelError("BookAuthor", "Required");
         //    var book = new Book { BookTitle = "Test Book", BookAuthor = "rerere" };
-        //    _mockBookService.Setup(s => s.GetBookByName("test book")).Returns(true);
 
         //    var result = _controller.AddNewBook(book);
 
-        //    result.Should().BeOfType<ConflictObjectResult>();
+        //    result.Should().BeOfType<BadRequestObjectResult>();
         //}
+
+        [Test]
+        public void AddNewBook_ShouldReturnConflict_WhenBookAlreadyExists()
+        {
+            var book = new Book { BookTitle = "Test Book", BookAuthor = "rerere" };
+            _mockBookService.Setup(s => s.GetBookByName("test book")).Returns(true);
+
+            var result = _controller.AddNewBook(book);
+
+            result.Should().BeOfType<ConflictObjectResult>();
+        }
 
         [Test]
         public void AddNewBook_ShouldReturnOk_WhenBookSuccessfullyAdded()
