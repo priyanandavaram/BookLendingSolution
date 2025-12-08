@@ -1,5 +1,4 @@
-﻿using BookLendingSolution.Models;
-using BookLendingSolution.Repository;
+﻿using BookLendingSolution.Repository;
 using BookLendingSolution.Tests.SampleTestData;
 using FluentAssertions;
 
