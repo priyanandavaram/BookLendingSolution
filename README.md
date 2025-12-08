@@ -86,3 +86,23 @@ Also, This solution is deployed to AWS Lambda + API Gateway services using the b
    - Runs the CloudFormation stack update (Template.yaml) to deploy the changes.
    - Updates the AWS Lambda function with the new deployment package from the S3 bucket.
    - Configures API Gateway to point to the updated Lambda function and generates the below API Gateway endpoints.
+
+ HTTP Action GET - https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books - GET all books
+
+ HTTP Action POST -  https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books - Add a book
+
+ Json Input for adding a book
+
+	{
+		"Id":0,
+		"BookTitle":"The Death Story",
+		"BookAuthor":"Georgia Watson",
+		"CheckedOutUser":""
+	}
+
+HTTP Action POST -  https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books/1/checkout - Checkout a book
+
+Json Input string for checking out a book
+	"Priya"
+
+HTTP Action POST -  https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books/1/return - Return a book
