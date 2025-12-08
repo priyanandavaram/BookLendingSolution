@@ -1,7 +1,7 @@
-using BookLendingSolution.Interfaces;
-using BookLendingSolution.Models;
-using BookLendingSolution.MessageConstants;
 using Microsoft.AspNetCore.Mvc;
+using BookLendingSolution.Models;
+using BookLendingSolution.Interfaces;
+using BookLendingSolution.MessageConstants;
 
 namespace BookLendingSolution.Controllers
 {
@@ -24,24 +24,23 @@ namespace BookLendingSolution.Controllers
             }
             else
             {
-                var ifBookExists = _bookService.GetBookByName(bookInfo.BookTitle.ToLower());
+                var bookExists = _bookService.GetBookByName(bookInfo.BookTitle.ToLower());
 
-                if (ifBookExists)
+                if (bookExists)
                 {
-                    return Conflict(new { message = BookStatusMessages.DuplicateBookTitle });
+                    return Conflict(new { message = BookStatusMessages.BookTitleExists });
                 }
                 else
                 {
-                    var (isBookAdded, addedBookInfo) = _bookService.AddBook(bookInfo);
+                    var (bookAdded, addedBookInfo) = _bookService.AddBook(bookInfo);
 
-                    if (isBookAdded)
+                    if (bookAdded)
                     {
                         return Ok(new { message = BookStatusMessages.BookAdded, book = addedBookInfo });
                     }
-
                     else
                     {
-                        return StatusCode(500, new { message = "An error occurred while adding the book." });
+                        return StatusCode(500, new { message = "An error occurred while adding this book." });
                     }
                 }
             }
@@ -60,7 +59,7 @@ namespace BookLendingSolution.Controllers
 
             if (bookInfo == null)
             {
-                return NotFound(new { message = $"Book with id {id} is not found." });
+                return NotFound(new { message = $"Book with the id {id} is not found." });
             }
 
             if (!bookInfo.IsBookAvailable)
@@ -89,7 +88,7 @@ namespace BookLendingSolution.Controllers
 
             if (bookInfo == null)
             {
-                return NotFound(new { message = $"Book with the id {id} was not found." });
+                return NotFound(new { message = $"Book with the id {id} is not found." });
             }
 
             if (bookInfo.IsBookAvailable)

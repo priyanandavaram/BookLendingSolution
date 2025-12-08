@@ -1,4 +1,7 @@
 ﻿using Amazon.Lambda.AspNetCoreServer;
+using BookLendingSolution.Interfaces;
+using BookLendingSolution.Repository;
+using BookLendingSolution.Service;
 
 namespace BookLendingSolution
 {
@@ -20,9 +23,9 @@ namespace BookLendingSolution
 
             services.AddSwaggerGen();
 
-            services.AddScoped<Interfaces.IBookService, Service.BookService>();
+            services.AddScoped<IBookService, BookService>();
 
-            services.AddSingleton<Interfaces.IBookRepository, Repository.BookRepository>();
+            services.AddSingleton<IBookRepository, BookRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
