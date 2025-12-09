@@ -1,48 +1,105 @@
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
-Description: Lambda Deployment for Book Lending Solution API
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Description: Lambda Deployment for Book Lending Solution API (Non-SAM Version)
 
 Resources:
 
-  BookLendingApi:
-    Type: AWS::Serverless::HttpApi
+  # -------------------------
+  # IAM Role for Lambda
+  # -------------------------
+  BookLendingLambdaRole:
+    Type: AWS::IAM::Role
     Properties:
-      StageName: prod
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
+
+  # -------------------------
+  # Lambda Function
+  # -------------------------
   BookLendingLambda:
-    Type: AWS::Serverless::Function
+    Type: AWS::Lambda::Function
     Properties:
       FunctionName: BookLendingSolutionApi
+      Role: !GetAtt BookLendingLambdaRole.Arn
       Handler: BookLendingSolution::BookLendingSolution.LambdaEntryPoint::FunctionHandlerAsync
       Runtime: dotnet8
       MemorySize: 256
       Timeout: 30
-      CodeUri: s3://{{S3_BUCKET}}/booklendingsolution.zip
-      Policies:
-        - AWSLambdaBasicExecutionRole
-      
-      Events:
+      Code:
+        S3Bucket: "{{S3_BUCKET}}"
+        S3Key: "booklendingsolution.zip"
 
-        GetBooks:
-          Type: HttpApi
-          Properties:
-            Path: /api/books
-            Method: GET
-            ApiId: !Ref BookLendingApi
+  # -------------------------
+  # HTTP API (API Gateway v2)
+  # -------------------------
+  BookLendingApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: BookLendingApi
+      ProtocolType: HTTP
 
-        CreateBook:
-          Type: HttpApi
-          Properties:
-            Path: /api/books
-            Method: POST
-            ApiId: !Ref BookLendingApi
+  # -------------------------
+  # API → Lambda Integration
+  # -------------------------
+  BookLendingIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref BookLendingApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BookLendingLambda.Arn}/invocations
+      PayloadFormatVersion: "2.0"
 
-        ProxyRoutes:
-          Type: HttpApi
-          Properties:
-            Path: /{proxy+}
-            Method: ANY
-            ApiId: !Ref BookLendingApi
+  # -------------------------
+  # API Routes
+  # -------------------------
+  GetBooksRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref BookLendingApi
+      RouteKey: "GET /api/books"
+      Target: !Sub integrations/${BookLendingIntegration}
+
+  CreateBookRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref BookLendingApi
+      RouteKey: "POST /api/books"
+      Target: !Sub integrations/${BookLendingIntegration}
+
+  ProxyRoutes:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref BookLendingApi
+      RouteKey: "ANY /{proxy+}"
+      Target: !Sub integrations/${BookLendingIntegration}
+
+  # -------------------------
+  # API Stage
+  # -------------------------
+  ApiStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref BookLendingApi
+      StageName: prod
+      AutoDeploy: true
+
+  # -------------------------
+  # Allow API Gateway to invoke Lambda
+  # -------------------------
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref BookLendingLambda
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${BookLendingApi}/*
 
 Outputs:
 
