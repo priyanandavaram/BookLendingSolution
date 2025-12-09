@@ -87,22 +87,12 @@ Also, This solution is deployed to AWS Lambda + API Gateway services using the b
    - Updates the AWS Lambda function with the new deployment package from the S3 bucket.
    - Configures API Gateway to point to the updated Lambda function and generates the below API Gateway endpoints.
 
- HTTP Action GET - https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books - GET all books
+Below is the postman collection for testing the deployed API Gateway endpoints.
 
- HTTP Action POST -  https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books - Add a book
+https://priyanandavaram-4461883.postman.co/workspace/Test's-Workspace~9c6ea062-f6c1-458b-8c2a-2b3f793baf12/collection/50695351-fcd5bfa0-9b2f-46dc-836d-921c3e6ca798?action=share&source=copy-link&creator=50695351
 
- Json Input for adding a book
+Or
 
-	{
-		"Id":0,
-		"BookTitle":"The Death Story",
-		"BookAuthor":"Georgia Watson",
-		"CheckedOutUser":""
-	}
+Please refer to the Postman collection JSON file in the repository to import it into your Postman application
 
-HTTP Action POST -  https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books/1/checkout - Checkout a book
 
-Json Input string for checking out a book
-	"Priya"
-
-HTTP Action POST -  https://qeb9wifzwe.execute-api.eu-north-1.amazonaws.com/prod/api/books/1/return - Return a book
